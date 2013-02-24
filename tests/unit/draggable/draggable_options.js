@@ -5,22 +5,6 @@
 
 module("draggable: options");
 
-test("{ addClasses: true }, default", function() {
-	expect( 1 );
-	var el = $("<div></div>").draggable({ addClasses: true });
-	ok(el.is(".ui-draggable"), "'ui-draggable' class added");
-
-	el.draggable("destroy");
-});
-
-test("{ addClasses: false }", function() {
-	expect( 1 );
-	var el = $("<div></div>").draggable({ addClasses: false });
-	ok(!el.is(".ui-draggable"), "'ui-draggable' class not added");
-
-	el.draggable("destroy");
-});
-
 // TODO: This doesn't actually test whether append happened, possibly remove
 test("{ appendTo: 'parent' }, default, no clone", function() {
 	expect( 2 );
@@ -254,6 +238,13 @@ test("cancel, default, switching after initialization", function() {
 });
 
 /*
+
+test("{ connectToSortable: selector }, default", function() {
+	expect( 1 );
+
+	ok(false, "missing test - untested code is broken code");
+});
+
 test("{ containment: false }, default", function() {
 	expect( 1 );
 
@@ -520,15 +511,15 @@ test( "disabled", function() {
 	expect( 3 );
 
 	var el = $("#draggable1").draggable();
-	
+
 	TestHelpers.draggable.shouldMove(el);
-	
+
 	el.draggable( "option", "disabled", true );
 	TestHelpers.draggable.shouldNotMove(el);
-	
+
 	el.draggable( "option", "disabled", false );
 	TestHelpers.draggable.shouldMove(el);
-	
+
 });
 
 test("{ grid: [50, 50] }, relative", function() {
@@ -972,16 +963,31 @@ test("opacity, default, switching after initialization", function() {
 
 	TestHelpers.draggable.move( el, 1, 1 );
 	equal( opacity, 1 );
-	
+
 	el.draggable( "option", "opacity", 0.5 );
 	TestHelpers.draggable.move( el, 2, 1 );
 	equal( opacity, 0.5 );
-	
+
 	el.draggable( "option", "opacity", false );
 	TestHelpers.draggable.move( el, 3, 1 );
 	equal( opacity, 1 );
 
 });
+
+/**
+add tests for the following:
+refreshPositions
+revert
+revertDuration
+scope
+scroll
+scrollSensitivity
+scrollSpeed
+snap
+snapMode
+snapTolerance
+stack
+*/
 
 test("{ zIndex: 10 }", function() {
 
@@ -1015,16 +1021,16 @@ test("zIndex, default, switching after initialization", function() {
 				zindex = $(this).css("z-index");
 			}
 		});
-		
+
 	el.css( "z-index", 1 );
 
 	TestHelpers.draggable.move( el, 1, 1 );
 	equal( zindex, 1 );
-	
+
 	el.draggable( "option", "zIndex", 5 );
 	TestHelpers.draggable.move( el, 2, 1 );
 	equal( zindex, 5 );
-	
+
 	el.draggable( "option", "zIndex", false );
 	TestHelpers.draggable.move( el, 3, 1 );
 	equal( zindex, 1 );
