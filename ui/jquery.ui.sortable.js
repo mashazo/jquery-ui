@@ -65,7 +65,9 @@ $.widget("ui.sortable", $.ui.mouse, {
 		sort: null,
 		start: null,
 		stop: null,
-		update: null
+		update: null,
+
+		zoom: 1.0 // snapsmart
 	},
 	_create: function() {
 
@@ -529,9 +531,11 @@ $.widget("ui.sortable", $.ui.mouse, {
 			x2 = x1 + this.helperProportions.width,
 			y1 = this.positionAbs.top,
 			y2 = y1 + this.helperProportions.height,
-			l = item.left,
+			//l = item.left,
+			l = item.left * this.options.zoom, // snapsmart
 			r = l + item.width,
-			t = item.top,
+			//t = item.top,
+			t = item.top * this.options.zoom, // snapsmart
 			b = t + item.height,
 			dyClick = this.offset.click.top,
 			dxClick = this.offset.click.left,
@@ -556,8 +560,10 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 	_intersectsWithPointer: function(item) {
 
-		var isOverElementHeight = (this.options.axis === "x") || isOverAxis(this.positionAbs.top + this.offset.click.top, item.top, item.height),
-			isOverElementWidth = (this.options.axis === "y") || isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width),
+		//var isOverElementHeight = (this.options.axis === "x") || isOverAxis(this.positionAbs.top + this.offset.click.top, item.top, item.height),
+			//isOverElementWidth = (this.options.axis === "y") || isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width),
+		var isOverElementHeight = (this.options.axis === "x") || isOverAxis(this.positionAbs.top + this.offset.click.top, item.top * this.options.zoom, item.height * this.options.zoom), // snapsmart
+			isOverElementWidth = (this.options.axis === "y") || isOverAxis(this.positionAbs.left + this.offset.click.left, item.left * this.options.zoom, item.width * this.options.zoom), // snapsmart
 			isOverElement = isOverElementHeight && isOverElementWidth,
 			verticalDirection = this._getDragVerticalDirection(),
 			horizontalDirection = this._getDragHorizontalDirection();
@@ -574,8 +580,10 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 	_intersectsWithSides: function(item) {
 
-		var isOverBottomHalf = isOverAxis(this.positionAbs.top + this.offset.click.top, item.top + (item.height/2), item.height),
-			isOverRightHalf = isOverAxis(this.positionAbs.left + this.offset.click.left, item.left + (item.width/2), item.width),
+		//var isOverBottomHalf = isOverAxis(this.positionAbs.top + this.offset.click.top, item.top + (item.height/2), item.height),
+			//isOverRightHalf = isOverAxis(this.positionAbs.left + this.offset.click.left, item.left + (item.width/2), item.width),
+		var isOverBottomHalf = isOverAxis(this.positionAbs.top + this.offset.click.top, item.top * this.options.zoom + (item.height * this.options.zoom/2), item.height * this.options.zoom), // snapsmart
+			isOverRightHalf = isOverAxis(this.positionAbs.left + this.offset.click.left, item.left * this.options.zoom + (item.width * this.options.zoom/2), item.width * this.options.zoom), // snapsmart
 			verticalDirection = this._getDragVerticalDirection(),
 			horizontalDirection = this._getDragHorizontalDirection();
 
@@ -780,8 +788,10 @@ $.widget("ui.sortable", $.ui.mouse, {
 					}
 
 					//If the element doesn't have a actual height by itself (without styles coming from a stylesheet), it receives the inline height from the dragged item
-					if(!p.height()) { p.height(that.currentItem.innerHeight() - parseInt(that.currentItem.css("paddingTop")||0, 10) - parseInt(that.currentItem.css("paddingBottom")||0, 10)); }
-					if(!p.width()) { p.width(that.currentItem.innerWidth() - parseInt(that.currentItem.css("paddingLeft")||0, 10) - parseInt(that.currentItem.css("paddingRight")||0, 10)); }
+					//if(!p.height()) { p.height(that.currentItem.innerHeight() - parseInt(that.currentItem.css("paddingTop")||0, 10) - parseInt(that.currentItem.css("paddingBottom")||0, 10)); }
+					//if(!p.width()) { p.width(that.currentItem.innerWidth() - parseInt(that.currentItem.css("paddingLeft")||0, 10) - parseInt(that.currentItem.css("paddingRight")||0, 10)); }
+					p.height((that.currentItem.innerHeight() - parseInt(that.currentItem.css("paddingTop")||0, 10) - parseInt(that.currentItem.css("paddingBottom")||0, 10)) * that.options.zoom);
+					p.width((that.currentItem.innerWidth() - parseInt(that.currentItem.css("paddingLeft")||0, 10) - parseInt(that.currentItem.css("paddingRight")||0, 10)) * that.options.zoom);
 				}
 			};
 		}
@@ -1043,12 +1053,14 @@ $.widget("ui.sortable", $.ui.mouse, {
 		return {
 			top: (
 				pos.top	+																// The absolute mouse position
+				//pos.top * this.options.zoom + // snapsmart
 				this.offset.relative.top * mod +										// Only for relative positioned nodes: Relative offset from element to offset parent
 				this.offset.parent.top * mod -											// The offsetParent's offset without borders (offset + border)
 				( ( this.cssPosition === "fixed" ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) ) * mod)
 			),
 			left: (
 				pos.left +																// The absolute mouse position
+				//pos.left * this.options.zoom + // snapsmart
 				this.offset.relative.left * mod +										// Only for relative positioned nodes: Relative offset from element to offset parent
 				this.offset.parent.left * mod	-										// The offsetParent's offset without borders (offset + border)
 				( ( this.cssPosition === "fixed" ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() ) * mod)

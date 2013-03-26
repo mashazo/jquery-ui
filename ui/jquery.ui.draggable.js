@@ -47,7 +47,9 @@ $.widget("ui.draggable", $.ui.mouse, {
 		// callbacks
 		drag: null,
 		start: null,
-		stop: null
+		stop: null,
+
+		zoom: 1.0 // snapsmart
 	},
 	_create: function() {
 

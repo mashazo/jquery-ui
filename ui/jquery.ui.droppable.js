@@ -37,7 +37,9 @@ $.widget("ui.droppable", {
 		deactivate: null,
 		drop: null,
 		out: null,
-		over: null
+		over: null,
+
+		zoom: 1.0 // snapsmart
 	},
 	_create: function() {
 
@@ -192,7 +194,6 @@ $.widget("ui.droppable", {
 });
 
 $.ui.intersect = function(draggable, droppable, toleranceMode) {
-
 	if (!droppable.offset) {
 		return false;
 	}
@@ -200,8 +201,8 @@ $.ui.intersect = function(draggable, droppable, toleranceMode) {
 	var draggableLeft, draggableTop,
 		x1 = (draggable.positionAbs || draggable.position.absolute).left, x2 = x1 + draggable.helperProportions.width,
 		y1 = (draggable.positionAbs || draggable.position.absolute).top, y2 = y1 + draggable.helperProportions.height,
-		l = droppable.offset.left, r = l + droppable.proportions.width,
-		t = droppable.offset.top, b = t + droppable.proportions.height;
+		l = droppable.offset.left * droppable.options.zoom, r = l + droppable.proportions.width * droppable.options.zoom,
+		t = droppable.offset.top * droppable.options.zoom, b = t + droppable.proportions.height * droppable.options.zoom;
 
 	switch (toleranceMode) {
 		case "fit":
@@ -280,14 +281,12 @@ $.ui.ddmanager = {
 		var dropped = false;
 		// Create a copy of the droppables in case the list changes during the drop (#9116)
 		$.each(($.ui.ddmanager.droppables[draggable.options.scope] || []).slice(), function() {
-
 			if(!this.options) {
 				return;
 			}
 			if (!this.options.disabled && this.visible && $.ui.intersect(draggable, this, this.options.tolerance)) {
 				dropped = this._drop.call(this, event) || dropped;
 			}
-
 			if (!this.options.disabled && this.visible && this.accept.call(this.element[0],(draggable.currentItem || draggable.element))) {
 				this.isout = true;
 				this.isover = false;
