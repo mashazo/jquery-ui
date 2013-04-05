@@ -30,7 +30,9 @@ $.widget("ui.selectable", $.ui.mouse, {
 		start: null,
 		stop: null,
 		unselected: null,
-		unselecting: null
+		unselecting: null,
+
+		zoom: 1.0 // snapsmart
 	},
 	_create: function() {
 		var selectees,
@@ -178,9 +180,9 @@ $.widget("ui.selectable", $.ui.mouse, {
 			}
 
 			if (options.tolerance === "touch") {
-				hit = ( !(selectee.left > x2 || selectee.right < x1 || selectee.top > y2 || selectee.bottom < y1) );
+				hit = ( !(selectee.left * options.zoom > x2 || selectee.right * options.zoom < x1 || selectee.top * options.zoom > y2 || selectee.bottom * options.zoom < y1) );
 			} else if (options.tolerance === "fit") {
-				hit = (selectee.left > x1 && selectee.right < x2 && selectee.top > y1 && selectee.bottom < y2);
+				hit = (selectee.left * options.zoom > x1 && selectee.right * options.zoom < x2 && selectee.top * options.zoom > y1 && selectee.bottom * options.zoom < y2);
 			}
 
 			if (hit) {

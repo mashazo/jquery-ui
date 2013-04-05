@@ -215,7 +215,7 @@ $.ui.intersect = function(draggable, droppable, toleranceMode) {
 		case "pointer":
 			draggableLeft = ((draggable.positionAbs || draggable.position.absolute).left + (draggable.clickOffset || draggable.offset.click).left);
 			draggableTop = ((draggable.positionAbs || draggable.position.absolute).top + (draggable.clickOffset || draggable.offset.click).top);
-			return isOverAxis( draggableTop, t, droppable.proportions.height ) && isOverAxis( draggableLeft, l, droppable.proportions.width );
+			return isOverAxis( draggableTop, t, droppable.proportions.height * droppable.options.zoom ) && isOverAxis( draggableLeft, l, droppable.proportions.width * droppable.options.zoom );
 		case "touch":
 			return (
 				(y1 >= t && y1 <= b) ||	// Top edge touching
